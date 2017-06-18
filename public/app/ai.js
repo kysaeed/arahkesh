@@ -1,34 +1,5 @@
 'use strict';
 
-var PlayerModel = function(player) {
-    this.king = {
-        hp: player.minionGrid.king.hp,
-        maxHp: player.minionGrid.king.hp,
-    };
-
-    var minions = [];
-    player.minionGrid.minions.forEach(function(minion) {
-        var minionModel = {
-            key: minion.key,
-            cost: minion.cost,
-            minionType: minion.minionType,
-            at: minion.at,
-            hp: minion.hp,
-            maxHp: minion.maxHp,
-            isManualAttacked: false,
-        };
-    });
-
-    this.deck = [];
-    this.hand = [];
-};
-
-PlayerModel.prototype = {
-    addMinion: function() {
-
-    },
-};
-
 var Attempter = function() {
     this.attemptTree = null;
 };
