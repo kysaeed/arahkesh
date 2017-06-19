@@ -261,7 +261,6 @@ Attempter.prototype.createRootAttemptNode = function(player, enemyPlayer) {
 };
 
 Attempter.prototype.createAttemptNode = function(parent) {
-    // console.log('createAttemptNode : enter');
     var newNode = {
         parent: parent,
         players: [
@@ -447,12 +446,6 @@ Ai.prototype.evaluation = function(player, enemyPlayer) {
     var score = 0;
     score += player.hand.length;
 
-    /*
-    if (player.deck.indexOf('Knight') >= 0) {
-        score += 1800;
-    }
-    */
-
     player.minions.forEach(function(minion) {
         var typeParam = 10;
         if (minion.minionType == Const.MinionType.ManualAttack) {
@@ -480,8 +473,12 @@ Ai.prototype.evaluation = function(player, enemyPlayer) {
         }
     });
 
-    if (enemyPlayer.king.hp - enemyPlayer.fatigue <= 0) {
-        score += 100000;
+    if (enemyPlayer.minions.length <= 0) {
+        score += (enemyPlayer.king.maxHp - enemyPlayer.king.hp);
+    }
+
+    if (enemyPlayer.king.hp <= 0) {
+        score += 100001;
     } else {
         if (enemyPlayer.deck.length <= 0) {
             if (enemyPlayer.king.hp - (enemyPlayer.fatigue + 1) <= 0) {
@@ -514,8 +511,6 @@ Ai.prototype.go = function() {
 };
 
 Ai.prototype.onMessage = function(client, type, args) {
-    // console.log('*AI* get message : ' + type);
-
     if (type == 'startTurn') {
         var operationSequence = this.think(client.player, client.enemyClient.player);
 
@@ -538,12 +533,13 @@ Ai.prototype.onMessage = function(client, type, args) {
 };
 
 Ai.prototype.send = function(type, args) {
-    // console.log('*AI* say : ' + type + ' args=' + JSON.stringify(args));
     if (this.sendMessageCallback) {
         this.sendMessageCallback(type, args);
     }
 };
 
+/*
+// dump game-tree to console
 Ai.prototype.dumpTree = function() {
     (function dumpNode(node, step) {
         var indentString = '';
@@ -569,3 +565,4 @@ Ai.prototype.dumpTree = function() {
         });
     })(this.attemper.attemptTree, 0);
 };
+*/
