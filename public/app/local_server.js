@@ -348,7 +348,7 @@ var LocalServer = (function() {
                                     deckAmount: player.deck.length,
                                 };
 
-                                if (player.playerId == 1) {
+                                if (player.team == Const.TeamType.Black) {
                                     player.hand.push('Coin');
                                 }
                                 client.send('mulliganEnd', data);
@@ -656,16 +656,30 @@ var LocalServer = (function() {
 
             clients[0].enemyClient = clients[1];
             clients[1].enemyClient = clients[0];
+
+            var firstPlayerId = Math.floor(Math.random() * 2);
+            clients.forEach(function(client, id) {
+                if (id == firstPlayerId) {
+                    client.player.team = Const.TeamType.White;
+                    client.player.hasControl = true;
+                } else {
+                    client.player.team = Const.TeamType.Black;
+                    client.player.hasControl = false;
+                }
+            });
+
+            /*
             clients[0].player.team = Const.TeamType.White;
             clients[1].player.team = Const.TeamType.Black;
             clients[0].player.hasControl = true;
             clients[1].player.hasControl = false;
+            */
 
             for (var playerId = 0; playerId < 2; playerId++) {
                 clients[playerId].player.createDeck();
                 clients[playerId].player.shuffleDeck();
                 clients[playerId].player.hand = [];
-                for (var i = 0; i < this.FirstHandCardCount[playerId]; i++) {
+                for (var i = 0; i < this.FirstHandCardCount[clients[playerId].player.team]; i++) {
                     var key = clients[playerId].player.deck.pop();
                     if (key != null) {
                         clients[playerId].player.hand.push(key);

@@ -31,8 +31,6 @@ window.onload = function() {
         });
 
         var title = new TitleScene(core);
-        //var battle = new BattleScene(core);
-
     };
 
     core.start();
