@@ -501,16 +501,28 @@ Ai.prototype.evaluation = function(player, enemyPlayer) {
     return score;
 };
 
-Ai.prototype.go = function() {
+Ai.prototype.onStartBattle = function() {
     this.send('ready', {});
-
-    this.send('mulligan', {
-        cancelCardIndexList: []
-    });
-    this.send('mulliganEnd', {});
 };
 
 Ai.prototype.onMessage = function(client, type, args) {
+    var player = client.player;
+    if (type == 'ready') {
+        var cancelCardIndexList = [];
+        for (var i = 0; i < player.hand.length; i++) {
+            var cardKey = player.hand[i];
+            var cardParam = Const.CardParam[cardKey];
+            if (cardParam.const > 1) {
+                cancelCardIndexList.push(i);
+            }
+        }
+
+        this.send('mulligan', {
+            cancelCardIndexList: cancelCardIndexList
+        });
+        this.send('mulliganEnd', {});
+    }
+
     if (type == 'startTurn') {
         var operationSequence = this.think(client.player, client.enemyClient.player);
 

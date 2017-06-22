@@ -145,13 +145,17 @@ var Coin = Class.create(Group, {
         this.addChild(slashText);
 
         var coinText = new Label('');
-        coinText.moveTo(100, 4);
+        coinText.width = 84;
+        coinText.textAlign = 'center';
+        coinText.moveTo(80, 4);
         coinText.color = '#ffffff';
         coinText.font = '41px champage';
         this.addChild(coinText);
 
         var maxCoinText = new Label('');
-        maxCoinText.moveTo(154, 40);
+        maxCoinText.textAlign = 'center';
+        maxCoinText.width = 34;
+        maxCoinText.moveTo(147, 40);
         maxCoinText.color = '#ffffff';
         maxCoinText.font = '16px champage';
         this.addChild(maxCoinText);
@@ -162,6 +166,21 @@ var Coin = Class.create(Group, {
         this.updateCoinText();
         this.moveTo(1010, 734 - (player.playerId * 728));
         core.currentScene.addChild(this);
+
+        this.coinUseLight = new Sprite(180, 58);
+        this.coinUseLight.image = core.assets[Resource.CoinBg]; // TODO: 白の矩形
+        this.coinUseLight.moveTo(0, 0);
+        this.coinUseLight.scaleX = 1.0;
+        this.coinUseLight.scaleY = 1.0;
+        this.coinUseLight.compositeOperation = 'lighter';
+        this.coinUseLight.opacity = 1.0;
+
+        this.coinUseLabel = new Label('');
+        this.coinUseLabel.textAlign = 'center';
+        this.coinUseLabel.width = 60;
+        this.coinUseLabel.height = 40;
+        this.coinUseLabel.color = '#0d0d0d';
+        this.coinUseLabel.font = '20px champage';
     },
 
     setMax: function(max) {
@@ -179,7 +198,20 @@ var Coin = Class.create(Group, {
             return false;
         }
         this.coin -= count;
-        this.updateCoinText();
+
+        var self = this;
+        this.coinUseLight.opacity = 1.0;
+        this.coinUseLight.tl.fadeOut(12).then(function() {
+            self.coinUseLabel.moveTo(0, 0);
+            self.coinUseLabel.text = '-' + count;
+            self.coinUseLabel.tl.moveBy(0, -20, 60).then(function() {
+                self.updateCoinText();
+                self.removeChild(self.coinUseLabel);
+            });
+            self.addChild(self.coinUseLabel);
+        });
+        this.addChild(this.coinUseLight);
+
         return true;
     },
 
@@ -720,7 +752,7 @@ var Minion = Class.create(Group, {
                     if (index > -1) {
                         self.player.enemyPlayer.king.hit(self.at, callback);
                     } else {
-                        calback();
+                        callback();
                     }
                 });
                 fireBulletToEnemyKing();
@@ -747,7 +779,7 @@ var Minion = Class.create(Group, {
                     if (index > -1) {
                         self.player.enemyPlayer.minionGrid.hitAutoAttack(targets, self.at, callback);
                     } else {
-                        calback();
+                        callback();
                     }
                 });
             }
@@ -1112,17 +1144,20 @@ var MinionGrid = Class.create(Group, {
         }
 
         if (!minion.player.coin.use(1)) {
+            callback();
             return;
         }
         minion.player.hand.setCostLimit(minion.player.coin.coin);
 
         var index = this.getMinionIndex(minion);
         if (index < 0) {
+            callback();
             return;
         }
 
         var swapIndex = index + offset;
         if ((swapIndex < 0) || (swapIndex >= this.getMinionCount())) {
+            callback();
             return;
         }
 
@@ -2115,13 +2150,13 @@ var Deck = Class.create(Group, {
         drawCardBack.y = self.y + self.cardBack.y;
 
         var hand = self.player.hand;
-        self.drawCardBack.tl.moveTo(500, 300, 20).and().rotateTo(360, 20).and().scaleTo(2.0, 2.0, 20).delay(10).then(function() {
+        self.drawCardBack.tl.moveBy(-20, -20, 10).moveTo(500, 300, 20).and().rotateTo(360, 20).and().scaleTo(2.0, 2.0, 20).delay(10).then(function() {
             card.x = drawCardBack.x;
             card.y = drawCardBack.y;
             overlay.addChild(card);
 
             drawCardBack.tl.fadeOut(24).delay(60).then(function() {
-                overlay.removeChild(drawCardBack);
+                self.core.currentScene.removeChild(drawCardBack);
 
                 var x = hand.x + hand.getAddCardPosX();
                 var y = hand.y + hand.cardPosY;
@@ -2134,7 +2169,7 @@ var Deck = Class.create(Group, {
                 });
             });
         });
-        overlay.addChild(drawCardBack);
+        this.core.currentScene.addChild(drawCardBack);
     },
 
     hiddenDraw: function(callback) {
@@ -2152,18 +2187,18 @@ var Deck = Class.create(Group, {
 
         var hand = self.player.hand;
         drawCardBack.tl.clear();
-        drawCardBack.tl.moveTo(500, 300, 20).and().rotateTo(360, 20).and().scaleTo(2.0, 2.0, 20).delay(10).then(function() {
+        drawCardBack.tl.moveBy(-20, -20, 10).moveTo(500, 300, 20).and().rotateTo(360, 20).and().scaleTo(2.0, 2.0, 20).delay(10).then(function() {
             var x = hand.x + hand.getAddCardPosX();
             var y = hand.y + hand.cardPosY;
             drawCardBack.tl.scaleTo(1.0, 1.0, 5).and().moveTo(x, y, 10).then(function() {
                 drawCardBack.scaleX = 1.0;
                 drawCardBack.scaleY = 1.0;
-                overlay.removeChild(drawCardBack);
+                self.core.currentScene.removeChild(drawCardBack);
                 hand.addCard();
                 callback();
             });
         });
-        overlay.addChild(drawCardBack);
+        this.core.currentScene.addChild(drawCardBack);
     },
 
     fatigue: function(callback) {

@@ -689,7 +689,7 @@ var LocalServer = (function() {
 
             for (var playerId = 0; playerId < 2; playerId++) {
                 if (clients[playerId].ai) {
-                    clients[playerId].ai.go();
+                    clients[playerId].ai.onStartBattle();
                 }
             }
             return true;

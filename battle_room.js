@@ -599,11 +599,6 @@ BattleRoom.prototype = {
             }
         }
 
-        for (var playerId = 0; playerId < 2; playerId++) {
-            if (clients[playerId].ai) {
-                clients[playerId].ai.go();
-            }
-        }
         return true;
     },
 
