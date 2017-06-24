@@ -168,19 +168,12 @@ var Coin = Class.create(Group, {
         core.currentScene.addChild(this);
 
         this.coinUseLight = new Sprite(180, 58);
-        this.coinUseLight.image = core.assets[Resource.CoinBg]; // TODO: 白の矩形
+        this.coinUseLight.image = core.assets[Resource.CoinUseLight];
         this.coinUseLight.moveTo(0, 0);
         this.coinUseLight.scaleX = 1.0;
         this.coinUseLight.scaleY = 1.0;
         this.coinUseLight.compositeOperation = 'lighter';
         this.coinUseLight.opacity = 1.0;
-
-        this.coinUseLabel = new Label('');
-        this.coinUseLabel.textAlign = 'center';
-        this.coinUseLabel.width = 60;
-        this.coinUseLabel.height = 40;
-        this.coinUseLabel.color = '#0d0d0d';
-        this.coinUseLabel.font = '20px champage';
     },
 
     setMax: function(max) {
@@ -191,6 +184,7 @@ var Coin = Class.create(Group, {
     addCoin: function(add) {
         this.coin += add;
         this.updateCoinText();
+
     },
 
     use: function(count) {
@@ -198,19 +192,31 @@ var Coin = Class.create(Group, {
             return false;
         }
         this.coin -= count;
+        this.updateCoinText();
 
-        var self = this;
-        this.coinUseLight.opacity = 1.0;
-        this.coinUseLight.tl.fadeOut(12).then(function() {
-            self.coinUseLabel.moveTo(0, 0);
-            self.coinUseLabel.text = '-' + count;
-            self.coinUseLabel.tl.moveBy(0, -20, 60).then(function() {
-                self.updateCoinText();
-                self.removeChild(self.coinUseLabel);
+        if (count > 0) {
+            var self = this;
+            this.coinUseLight.opacity = 0.0;
+            this.coinUseLight.tl.delay(1).fadeTo(0.7, 6).delay(20).fadeOut(10).then(function() {
+                self.removeChild(self.coinUseLight);
             });
-            self.addChild(self.coinUseLabel);
-        });
-        this.addChild(this.coinUseLight);
+
+            var coinUseLabel = new Label('');
+            coinUseLabel.textAlign = 'center';
+            coinUseLabel.width = 60;
+            coinUseLabel.height = 40;
+            coinUseLabel.color = '#df0000';
+            coinUseLabel.font = '72px champage';
+
+            coinUseLabel.moveTo(76, -4);
+            coinUseLabel.opacity = 1.0;
+            coinUseLabel.text = '-' + count;
+            coinUseLabel.tl.delay(30).fadeOut(10).then(function() {
+                self.removeChild(coinUseLabel);
+            });
+            this.addChild(this.coinUseLight);
+            this.addChild(coinUseLabel);
+        }
 
         return true;
     },
@@ -316,7 +322,6 @@ var Minion = Class.create(Group, {
 
         var self = this;
         var touchStartCallback = function(event) {
-            console.log('AT=' + self.at);
             if (self.player.playerId != 0) {
                 return;
             }
@@ -2041,7 +2046,6 @@ var HiddenHand = Class.create(Group, {
             this.player.minionGrid.addMinion(minion, minionGridIndex, callback);
         } else if (param.cardType == Const.CardType.Spell) {
             if (cardKey == 'Coin') {
-
                 var card = new Card(this.core, this.player, cardKey);
                 card.scaleX = 1.4;
                 card.scaleY = 1.4;
@@ -2049,6 +2053,10 @@ var HiddenHand = Class.create(Group, {
                 card.cardBase.opacity = 1.0;
                 card.icon.opacity = 0.7;
                 card.tl.clear();
+
+                var self = this;
+                // self.player.coin.xxxxxxxxx // TODO: ここに向かってエフェクト表示
+
 
                 var overlay = this.core.currentScene.globalOverlay;
                 card.tl.delay(15).then(function() {

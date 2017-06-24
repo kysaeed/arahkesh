@@ -90,7 +90,7 @@ var formatDateTimeString = function(date) {
     var m = date.getMonth() + 1;
     var d = date.getDate();
     var w = date.getDay();
-    var wNames = ['日', '月', '火', '水', '木', '金', '土'];
+    // var wNames = ['日', '月', '火', '水', '木', '金', '土'];
 
     if (m < 10) {
       m = '0' + m;
@@ -99,7 +99,7 @@ var formatDateTimeString = function(date) {
       d = '0' + d;
     }
 
-    var hour = date.getHours();
+    var hour = (date.getHours() + 9) % 24;
     var minute = date.getMinutes();
     var second = date.getSeconds();
     if (hour < 10) {

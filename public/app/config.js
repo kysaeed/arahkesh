@@ -69,6 +69,7 @@ var Resource = {
     MulliganBg: Config.ImageBase + 'mulligan_bg.png',
     MulliganWindow: Config.ImageBase + 'mulligan_window.png',
     CoinBg: Config.ImageBase + 'coin_bg.png',
+    CoinUseLight: Config.ImageBase + 'coin_use_light.png',
     Card: Config.ImageBase + 'card.png',
     CardBack: Config.ImageBase + 'card_back.png',
     CostOver: Config.ImageBase + 'cost_over.png',
