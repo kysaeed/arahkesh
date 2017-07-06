@@ -99,7 +99,7 @@ var formatDateTimeString = function(date) {
       d = '0' + d;
     }
 
-    var hour = (date.getHours() + 9) % 24;
+    var hour = (date.getHours());
     var minute = date.getMinutes();
     var second = date.getSeconds();
     if (hour < 10) {
