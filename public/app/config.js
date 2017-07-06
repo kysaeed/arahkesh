@@ -72,6 +72,7 @@ var Resource = {
     CoinUseLight: Config.ImageBase + 'coin_use_light.png',
     Card: Config.ImageBase + 'card.png',
     CardBack: Config.ImageBase + 'card_back.png',
+    CardLight: Config.ImageBase + 'card_light.png',
     CostOver: Config.ImageBase + 'cost_over.png',
     EffectHit: Config.ImageBase + 'ef_hit.png',
     EffectBullet: Config.ImageBase + 'ef_bullet.png',

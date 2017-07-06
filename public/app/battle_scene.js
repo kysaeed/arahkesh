@@ -1898,18 +1898,31 @@ var Hand = Class.create(Group, {
         card.icon.opacity = 0.7;
         card.tl.clear();
 
+        var self = this;
         var overlay = this.core.currentScene.globalOverlay;
         card.tl.delay(15).then(function() {
             card.startFadeOut(10);
             card.tl.scaleTo(3.0, 10).then(function() {
                 overlay.removeChild(card);
-                this.player.coin.addCoin(1);
-                if (callback) {
-                    callback();
-                }
             });
         });
         overlay.addChild(card);
+
+        var light = new Sprite(88, 128);
+        light.scaleX = 1.4;
+        light.scaleY = 1.4;
+        light.moveTo(340, 330);
+        light.image = this.core.assets[Resource.CardLight];
+        light.opacity = 0.0;
+        light.compositeOperation = 'lighter';
+        this.core.currentScene.addChild(light);
+        light.tl.delay(10).fadeTo(0.1, 15).scaleTo(0.5, 0.34, 15).moveTo(this.player.coin.x + 70, this.player.coin.y + 10, 22).then(function() {
+            self.player.coin.addCoin(1);
+            self.core.currentScene.removeChild(light);
+            if (callback) {
+                callback();
+            }
+        });
 
         this.core.network.useCard(usedCardIndex, null);
     },
@@ -2055,19 +2068,31 @@ var HiddenHand = Class.create(Group, {
                 card.tl.clear();
 
                 var self = this;
-                // self.player.coin.xxxxxxxxx // TODO: ここに向かってエフェクト表示
-
 
                 var overlay = this.core.currentScene.globalOverlay;
                 card.tl.delay(15).then(function() {
                     card.startFadeOut(10);
                     card.tl.scaleTo(3.0, 10).then(function() {
                         overlay.removeChild(card);
-                        this.player.coin.addCoin(1);
-                        callback();
                     });
                 });
                 overlay.addChild(card);
+
+                var light = new Sprite(88, 128);
+                light.scaleX = 1.4;
+                light.scaleY = 1.4;
+                light.moveTo(340, 330);
+                light.image = this.core.assets[Resource.CardLight];
+                light.opacity = 0.0;
+                light.compositeOperation = 'lighter';
+                this.core.currentScene.addChild(light);
+                light.tl.delay(10).fadeTo(0.1, 15).scaleTo(0.5, 0.34, 15).moveTo(this.player.coin.x + 70, this.player.coin.y + 10, 22).then(function() {
+                    self.player.coin.addCoin(1);
+                    self.core.currentScene.removeChild(light);
+                    if (callback) {
+                        callback();
+                    }
+                });
             } else {
                 callback();
             }

@@ -118,7 +118,9 @@ var formatDateTimeString = function(date) {
 var wsServer = ws.listen(server);
 
 wsServer.on('connection', function(socket) {
-    console.log('connected!! : ' + formatDateTimeString(new Date()) + ' addr=' + socket.conn.remoteAddress);
+    var d = new Date();
+    d.setHours(d.getHours() + 9);
+    console.log('connected!! : ' + formatDateTimeString(d) + ' addr=' + socket.conn.remoteAddress);
 
     var client = new Client(socket);
     client.currentRoom = loginRoom;
