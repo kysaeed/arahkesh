@@ -17,9 +17,7 @@ var app = Express();
 var server = http.createServer(app);
 
 
-var ws = require('socket.io');
-
-
+var socketIo = require('socket.io');
 
 var loginRoom = new LoginRoom();
 var matchingRoom = new MatchingRoom();
@@ -115,7 +113,8 @@ var formatDateTimeString = function(date) {
     return y + '/' + m + '/' + d + ' ' + hour + ':' + minute + ':' + second;
 };
 
-var wsServer = ws.listen(server);
+// var wsServer = ws.listen(server);
+var wsServer = socketIo(server);
 
 wsServer.on('connection', function(socket) {
     var d = new Date();
